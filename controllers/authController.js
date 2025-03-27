@@ -1,16 +1,17 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-const ErrorResponse = require('../utils/errorResponse');
+// Import using ES modules
+import { UserModel } from '../models/User.js';
+import jwt from 'jsonwebtoken';
+import ErrorResponse from '../utils/errorResponse.js';
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register
 // @access  Public
-exports.register = async (req, res, next) => {
+export const register = async (req, res, next) => {
   try {
     const { name, email, password, businessType } = req.body;
 
     // Create user
-    const user = await User.create({
+    const user = await UserModel.create({
       name,
       email,
       password,
@@ -26,7 +27,7 @@ exports.register = async (req, res, next) => {
 // @desc    Login user
 // @route   POST /api/v1/auth/login
 // @access  Public
-exports.login = async (req, res, next) => {
+export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -36,7 +37,7 @@ exports.login = async (req, res, next) => {
     }
 
     // Check for user
-    const user = await User.findOne({ email }).select('+password');
+    const user = await UserModel.findOne({ email }).select('+password');
 
     if (!user) {
       return next(new ErrorResponse('Invalid credentials', 401));
@@ -62,7 +63,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 
   const options = {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+      Date.now() + (process.env.JWT_COOKIE_EXPIRE || 30) * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
   };

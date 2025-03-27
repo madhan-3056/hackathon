@@ -1,16 +1,5 @@
-import express from 'express';
-import users from './user2.js';
-const app = express();
+// Main entry point for the application
+console.log('Starting Virtual Lawyer application...');
 
-app.get("/", (req, res) => {
-    res.send("Server is ready")
-})
-
-app.get("/api/user", (req, res) => {
-    res.send(users);
-})
-const port = process.env.PORT || 5000;
-
-app.listen(port, () => {
-    console.log(`Server at http://localhost:${port}`);
-});
+// Import and run the server-combined.js file
+import './server-combined.js';

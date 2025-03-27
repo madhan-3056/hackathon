@@ -1,4 +1,6 @@
-const ErrorResponse = require('../utils/errorResponse');
+import ErrorResponse from '../utils/errorResponse.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
@@ -31,4 +33,9 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-module.exports = errorHandler;
+export default errorHandler;
+
+// For CommonJS compatibility
+if (typeof module !== 'undefined') {
+  module.exports = errorHandler;
+}

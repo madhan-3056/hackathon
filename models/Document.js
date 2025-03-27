@@ -1,4 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 const documentSchema = new mongoose.Schema({
   user: {
@@ -44,4 +46,11 @@ documentSchema.pre('save', function (next) {
   next();
 });
 
-module.exports = mongoose.model('Document', documentSchema);
+const Document = mongoose.model('Document', documentSchema);
+
+export default Document;
+
+// For CommonJS compatibility
+if (typeof module !== 'undefined') {
+  module.exports = Document;
+}

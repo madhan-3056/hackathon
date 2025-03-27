@@ -1,0 +1,45 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/bower_components": true,
+      "**/*.code-search": true,
+      "**/build": true
+    },
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+      "*.js": "${capture}.test.js, ${capture}.spec.js",
+      "package.json": "package-lock.json, yarn.lock, .npmrc"
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "ms-vscode.vscode-node-azure-pack",
+      "christian-kohler.path-intellisense",
+      "formulahendry.auto-rename-tag",
+      "ritwickdey.liveserver",
+      "ms-vscode.js-debug"
+    ]
+  },
+  "launch": {
+    "configurations": [],
+    "compounds": []
+  }
+}

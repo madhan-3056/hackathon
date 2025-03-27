@@ -1,38 +1,12 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const errorHandler = require('./middlewares/errorHandler');
-const connectDB = require('./config/db');
-
-// Route files
-const authRoutes = require('./routes/authRoutes');
-const documentRoutes = require('./routes/documentRoutes');
-const complianceRoutes = require('./routes/complianceRoutes');
-const chatRoutes = require('./routes/chatRoutes');
-
-// Connect to database
-connectDB();
+import express from 'express'; // Use import instead of require
 
 const app = express();
 
-// Body parser
-app.use(express.json());
+// Your express setup continues...
+app.get('/', (req, res) => {
+    res.send('Hello, world!');
+});
 
-// Dev logging middleware
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
-
-// Enable CORS
-app.use(cors());
-
-// Mount routers
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/documents', documentRoutes);
-app.use('/api/v1/compliance', complianceRoutes);
-app.use('/api/v1/chat', chatRoutes);
-
-// Error handler middleware
-app.use(errorHandler);
-
-module.exports = app;
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});

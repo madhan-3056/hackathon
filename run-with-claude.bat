@@ -1,0 +1,6 @@
+@echo off
+echo Starting Virtual Lawyer application with Claude AI...
+
+echo Running application with Claude API key...
+node run-with-claude.js
+pause

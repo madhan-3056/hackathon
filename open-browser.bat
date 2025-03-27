@@ -1,0 +1,3 @@
+@echo off
+echo Opening Virtual Lawyer in your browser...
+start http://localhost:5001

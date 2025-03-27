@@ -1,11 +1,12 @@
-const Document = require('../models/Document');
-const ErrorResponse = require('../utils/errorResponse');
-const { analyzeDocument } = require('../services/aiService');
+// Import using ES modules
+import Document from '../models/Document.js';
+import ErrorResponse from '../utils/errorResponse.js';
+import { analyzeDocument as analyzeDocumentService } from '../services/aiService.js';
 
 // @desc    Create a new document
 // @route   POST /api/v1/documents
 // @access  Private
-exports.createDocument = async (req, res, next) => {
+export const createDocument = async (req, res, next) => {
   try {
     const { title, content, type } = req.body;
     const userId = req.user.id;
@@ -29,7 +30,7 @@ exports.createDocument = async (req, res, next) => {
 // @desc    Analyze document with AI
 // @route   POST /api/v1/documents/:id/analyze
 // @access  Private
-exports.analyzeDocument = async (req, res, next) => {
+export const analyzeDocument = async (req, res, next) => {
   try {
     const document = await Document.findById(req.params.id);
 
@@ -50,7 +51,7 @@ exports.analyzeDocument = async (req, res, next) => {
     }
 
     // Analyze document with AI
-    const analysis = await analyzeDocument(document.content);
+    const analysis = await analyzeDocumentService(document.content);
 
     // Update document with analysis results
     document.riskAssessment = {

@@ -1,0 +1,34 @@
+
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Virtual Lawyer - Frontend Not Built</title>
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: 0 auto; }
+      h1 { color: #333; }
+      .error { color: #e74c3c; background: #fceaea; padding: 10px; border-radius: 5px; }
+      .code { background: #f4f4f4; padding: 10px; border-radius: 5px; font-family: monospace; }
+      .button { display: inline-block; background: #3498db; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; }
+    </style>
+  </head>
+  <body>
+    <h1>Virtual Lawyer</h1>
+    <div class="error">
+      <h2>Frontend Not Built</h2>
+      <p>The frontend build directory was not found. The API endpoints are working, but the user interface is not available.</p>
+    </div>
+    <h3>To fix this issue:</h3>
+    <div class="code">
+      <p>cd frontend</p>
+      <p>npm install</p>
+      <p>npm run build</p>
+      <p>cd ..</p>
+      <p>node server-enhanced.js</p>
+    </div>
+    <h3>API Status</h3>
+    <p>The API is running and can be accessed at <a href="/api/v1/health">/api/v1/health</a></p>
+    <p>For detailed status information, visit <a href="/status">/status</a></p>
+    <p><a href="javascript:location.reload()" class="button">Refresh Page</a></p>
+  </body>
+  </html>
+  

@@ -1,28 +1,72 @@
 {
-  "name": "deepseek_virtual-layer",
+  "name": "virtual-lawyer",
   "version": "1.0.0",
-  "main": "app.js",
-  "type":"module",
+  "main": "server-combined.js",
+  "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server-combined.js",
+    "dev": "nodemon server-combined.js",
+    "build": "node build-deploy.js",
+    "backend": "node index.js",
+    "frontend": "cd frontend && npm start",
+    "dev:both": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "test:imports": "node test-imports.js",
+    "test:app": "node test-app.js",
+    "test:env": "node test-env.js",
+    "test:claude": "node test-claude.js",
+    "test:connection": "node test-connection.js",
+    "check-deps": "node check-dependencies.js",
+    "prestart": "node check-dependencies.js",
+    "deploy:check": "node check-deployment.js",
+    "deploy:vps": "bash deploy.sh",
+    "deploy:docker": "bash deploy-docker.sh",
+    "deploy:heroku": "deploy-heroku.bat",
+    "deploy:netlify": "deploy-netlify.bat",
+    "deploy:vercel": "deploy-vercel.bat",
+    "deploy:render": "deploy-render.bat",
+    "deploy:ftp": "deploy-ftp.bat",
+    "deploy:live": "bash deploy-live.sh",
+    "server:connect": "bash connect-to-server.sh",
+    "prepare:deploy": "bash prepare-deployment.sh",
+    "fix:frontend": "cd frontend && npm install && npm install react-scripts --save",
+    "start:app": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "install:all": "npm install && cd frontend && npm install && cd ..",
+    "build:frontend": "cd frontend && npm run build",
+    "build:deploy": "node build-for-deployment.js",
+    "connect:deploy": "bash connect-and-deploy.sh"
   },
-  "keywords": [],
+  "keywords": [
+    "legal",
+    "ai",
+    "virtual-lawyer",
+    "compliance"
+  ],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",
     "colors": "^1.4.0",
+    "concurrently": "^8.2.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "openai": "^4.28.0",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
-  }
-
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArunSree123/Arun.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ArunSree123/Arun/issues"
+  },
+  "homepage": "https://github.com/ArunSree123/Arun#readme",
+  "description": "Virtual Lawyer - AI-powered legal assistant for document analysis and compliance"
 }

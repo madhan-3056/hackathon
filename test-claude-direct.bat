@@ -1,0 +1,9 @@
+@echo off
+echo Testing Claude API directly with the provided key...
+
+echo Updating .env file with Claude API key...
+copy /Y .env.claude .env
+
+echo Running direct test...
+node test-claude-direct.js
+pause

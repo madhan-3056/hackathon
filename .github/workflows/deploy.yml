@@ -1,0 +1,46 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        
+    - name: Install backend dependencies
+      run: npm install
+      
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm install
+        
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm run build
+        
+    - name: Run tests
+      run: npm test
+      continue-on-error: true
+      
+    # Deploy to Render (uncomment when ready)
+    # - name: Deploy to Render
+    #   run: curl -s "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+      
+    # Deploy to Heroku (uncomment when ready)
+    # - name: Deploy to Heroku
+    #   uses: akhileshns/heroku-deploy@v3.12.12
+    #   with:
+    #     heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+    #     heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+    #     heroku_email: ${{ secrets.HEROKU_EMAIL }}

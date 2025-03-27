@@ -1,0 +1,9 @@
+@echo off
+echo Starting Virtual Lawyer application with Claude AI...
+
+echo Updating .env file...
+copy /Y .env.new .env
+
+echo Starting application...
+node start.js
+pause

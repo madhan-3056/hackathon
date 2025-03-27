@@ -1,5 +1,15 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+// Use relative path
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+export class User {
+  constructor() {
+    console.log('User class initialized');
+  }
+}
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -46,4 +56,17 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+// Get JWT token
+userSchema.methods.getSignedJwtToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET || 'secret', {
+    expiresIn: process.env.JWT_EXPIRE || '30d',
+  });
+};
+
+export const UserModel = mongoose.model('User', userSchema);
+
+// For CommonJS compatibility
+export default UserModel;
+if (typeof module !== 'undefined') {
+  module.exports = { User, UserModel };
+}
