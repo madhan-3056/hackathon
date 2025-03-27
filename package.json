@@ -62,11 +62,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArunSree123/Arun.git"
+    "url": ""
   },
-  "bugs": {
-    "url": "https://github.com/ArunSree123/Arun/issues"
-  },
-  "homepage": "https://github.com/ArunSree123/Arun#readme",
   "description": "Virtual Lawyer - AI-powered legal assistant for document analysis and compliance"
 }
