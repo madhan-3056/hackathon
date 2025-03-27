@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const documentRoutes = require('./routes/documentRoutes.cjs');
 const complianceRoutes = require('./routes/complianceRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 
 // Connect to database
 connectDB();
@@ -31,6 +32,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/documents', documentRoutes);
 app.use('/api/v1/compliance', complianceRoutes);
 app.use('/api/v1/chat', chatRoutes);
+app.use('/api/v1/ai', aiRoutes);
 
 // Error handler middleware
 app.use(errorHandler);

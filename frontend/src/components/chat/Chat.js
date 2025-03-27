@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import { chatService, aiService } from '../../services/apiService';
 
 const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
+    const [aiConfig, setAiConfig] = useState({ available: false });
     const messagesEndRef = useRef(null);
 
-    // Fetch messages on component mount
+    // Fetch messages and AI config on component mount
     useEffect(() => {
         fetchMessages();
+        fetchAiConfig();
     }, []);
 
     // Scroll to bottom whenever messages change
@@ -21,20 +23,29 @@ const Chat = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
+    // Fetch AI configuration
+    const fetchAiConfig = async () => {
+        try {
+            const response = await fetch('/api/v1/ai/config', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            const data = await response.json();
+            if (data.success) {
+                setAiConfig(data.data);
+                console.log('AI config loaded:', data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching AI config:', error);
+        }
+    };
+
     const fetchMessages = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) return;
-
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-
-            const res = await axios.get('/api/v1/chat/messages', config);
-            if (res.data.success) {
-                setMessages(res.data.data);
+            const response = await chatService.getMessages();
+            if (response.success) {
+                setMessages(response.data);
             }
         } catch (error) {
             console.error('Error fetching messages:', error);
@@ -69,41 +80,51 @@ const Chat = () => {
         setLoading(true);
 
         try {
-            const token = localStorage.getItem('token');
-            if (!token) throw new Error('Not authenticated');
-
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            };
-
             // Determine if this is a legal term explanation request
             const isLegalTermRequest = input.toLowerCase().includes('what is') ||
                 input.toLowerCase().includes('explain') ||
                 input.toLowerCase().includes('define') ||
                 input.toLowerCase().includes('meaning of');
 
-            const messageType = isLegalTermRequest ? 'explain_term' : 'general';
+            if (isLegalTermRequest && aiConfig.available) {
+                // Extract the term to explain
+                const termMatch = input.match(/what is|explain|define|meaning of\s+([a-z\s]+)/i);
+                if (termMatch && termMatch[1]) {
+                    const term = termMatch[1].trim();
 
-            const res = await axios.post(
-                '/api/v1/chat/messages',
-                { content: input, type: messageType },
-                config
-            );
+                    // Send message to chat service
+                    const chatResponse = await chatService.sendMessage(input, 'explain_term');
 
-            if (res.data.success) {
-                // Replace the temporary message with the actual one from server
-                setMessages(prevMessages =>
-                    prevMessages.map(msg =>
-                        msg.id === userMessage.id ? res.data.data.message : msg
-                    )
-                );
+                    if (chatResponse.success) {
+                        // Replace the temporary message with the actual one from server
+                        setMessages(prevMessages =>
+                            prevMessages.map(msg =>
+                                msg.id === userMessage.id ? chatResponse.data.message : msg
+                            )
+                        );
 
-                // Add AI response if available
-                if (res.data.data.aiResponse) {
-                    setMessages(prevMessages => [...prevMessages, res.data.data.aiResponse]);
+                        // Add AI response if available
+                        if (chatResponse.data.aiResponse) {
+                            setMessages(prevMessages => [...prevMessages, chatResponse.data.aiResponse]);
+                        }
+                    }
+                }
+            } else {
+                // Send as regular chat message
+                const response = await chatService.sendMessage(input, 'general');
+
+                if (response.success) {
+                    // Replace the temporary message with the actual one from server
+                    setMessages(prevMessages =>
+                        prevMessages.map(msg =>
+                            msg.id === userMessage.id ? response.data.message : msg
+                        )
+                    );
+
+                    // Add AI response if available
+                    if (response.data.aiResponse) {
+                        setMessages(prevMessages => [...prevMessages, response.data.aiResponse]);
+                    }
                 }
             }
         } catch (error) {
@@ -125,26 +146,19 @@ const Chat = () => {
 
     const clearChat = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) return;
+            const response = await chatService.clearChat();
 
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-
-            await axios.post('/api/v1/chat/clear', {}, config);
-
-            // Reset messages with welcome message
-            setMessages([
-                {
-                    id: 'welcome',
-                    content: 'Chat history cleared. How can I help you today?',
-                    sender: 'ai',
-                    timestamp: new Date().toISOString()
-                }
-            ]);
+            if (response.success) {
+                // Reset messages with welcome message
+                setMessages([
+                    {
+                        id: 'welcome',
+                        content: 'Chat history cleared. How can I help you today?',
+                        sender: 'ai',
+                        timestamp: new Date().toISOString()
+                    }
+                ]);
+            }
         } catch (error) {
             console.error('Error clearing chat:', error);
         }
