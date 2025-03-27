@@ -1,0 +1,802 @@
+/* Legal Actions Page Styles */
+
+/* Legal Hero Section */
+.legal-hero {
+    padding: 5rem 0;
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.legal-hero .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+}
+
+.legal-hero-content {
+    flex: 1;
+    max-width: 600px;
+}
+
+.legal-hero-content h1 {
+    font-size: 3.5rem;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: var(--dark-color);
+}
+
+.judiciary-emblem {
+    flex: 1;
+    max-width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Scales of Justice with RGB Effects */
+.scales-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.scales {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    z-index: 2;
+}
+
+.scale-base {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 120px;
+    background: linear-gradient(to bottom, #c0c0c0, #e0e0e0);
+    border-radius: 5px;
+}
+
+.scale-left,
+.scale-right {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+    border: 3px solid #c0c0c0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: balance 5s infinite ease-in-out;
+}
+
+.scale-left {
+    left: 10px;
+    bottom: 100px;
+    animation-delay: 0s;
+}
+
+.scale-right {
+    right: 10px;
+    bottom: 100px;
+    animation-delay: 0.5s;
+}
+
+@keyframes balance {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(-10px);
+    }
+
+    75% {
+        transform: translateY(10px);
+    }
+}
+
+.rgb-glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: transparent;
+    z-index: 1;
+    animation: rgb-rotate 10s linear infinite;
+}
+
+.rgb-glow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(#ff0000, #ff8000, #ffff00, #80ff00, #00ff00,
+            #00ff80, #00ffff, #0080ff, #0000ff, #8000ff,
+            #ff00ff, #ff0080, #ff0000);
+    filter: blur(20px);
+    opacity: 0.7;
+    animation: rgb-pulse 3s ease-in-out infinite;
+}
+
+@keyframes rgb-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rgb-pulse {
+
+    0%,
+    100% {
+        transform: scale(0.9);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* Legal Tabs Section */
+.legal-tabs {
+    padding: 5rem 0;
+    background-color: white;
+}
+
+.tabs-container {
+    background-color: var(--light-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.tabs-header {
+    display: flex;
+    background-color: var(--dark-color);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 1.5rem;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tab-btn i {
+    font-size: 1.5rem;
+}
+
+.tab-btn.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-bottom: 3px solid var(--secondary-color);
+}
+
+.tab-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tabs-content {
+    padding: 3rem;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tab-content h2 {
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+    color: var(--dark-color);
+    text-align: center;
+    position: relative;
+    display: inline-block;
+}
+
+.tab-content h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--secondary-color), transparent);
+}
+
+/* Legal Steps */
+.legal-steps {
+    margin-bottom: 3rem;
+}
+
+.legal-step {
+    display: flex;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.legal-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 70px;
+    left: 30px;
+    width: 2px;
+    height: calc(100% + 2.5rem);
+    background: linear-gradient(to bottom, var(--secondary-color), rgba(108, 99, 255, 0.2));
+    z-index: 0;
+}
+
+.step-number {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+    color: white;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 2rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    box-shadow: var(--shadow-md);
+}
+
+.step-content {
+    flex: 1;
+    background-color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.legal-step:hover .step-content {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.step-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+.step-content p {
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.action-items {
+    background-color: rgba(108, 99, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border-left: 3px solid var(--secondary-color);
+}
+
+.action-items h4 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+.action-items ul {
+    padding-left: 1.5rem;
+}
+
+.action-items li {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+/* Legal Resources */
+.legal-resources {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+}
+
+.legal-resources h3 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--dark-color);
+}
+
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.resource-card {
+    background-color: var(--light-color);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.resource-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-md);
+}
+
+.resource-card i {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+}
+
+.resource-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: var(--dark-color);
+}
+
+.resource-link {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+    color: white;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: var(--shadow-sm);
+}
+
+.resource-link:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Action CTA Section */
+.action-cta {
+    padding: 5rem 0;
+    text-align: center;
+    background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-cta::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(rgba(255, 255, 255, 0.1), transparent);
+    z-index: 1;
+}
+
+.action-cta .container {
+    position: relative;
+    z-index: 2;
+}
+
+.action-cta h2 {
+    font-size: 2.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.action-cta p {
+    max-width: 700px;
+    margin: 0 auto 2.5rem;
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.action-cta .btn {
+    background: white;
+    color: var(--secondary-color);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.action-cta .btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.action-cta .btn-outline {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+}
+
+.action-cta .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* AI Assistant with RGB Effects */
+.ai-assistant-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+}
+
+.ai-assistant-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(108, 99, 255, 0.4);
+    transition: all 0.3s;
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+}
+
+.rgb-ring {
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    border-radius: 50%;
+    z-index: -1;
+    animation: rgb-spin 3s linear infinite;
+}
+
+.rgb-ring::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(#ff0000, #ff8000, #ffff00, #80ff00, #00ff00,
+            #00ff80, #00ffff, #0080ff, #0000ff, #8000ff,
+            #ff00ff, #ff0080, #ff0000);
+    filter: blur(15px);
+    animation: rgb-pulse 2s ease-in-out infinite;
+}
+
+@keyframes rgb-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.ai-assistant-icon:hover {
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 8px 25px rgba(108, 99, 255, 0.6);
+}
+
+.ai-assistant-icon i {
+    color: white;
+    font-size: 1.8rem;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+}
+
+.ai-assistant-window {
+    width: 380px;
+    height: 550px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.4s;
+    position: absolute;
+    bottom: 90px;
+    right: 0;
+}
+
+.ai-assistant-window.active {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.ai-assistant-header {
+    background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+    color: white;
+    padding: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-assistant-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            rgba(255, 0, 0, 0.2),
+            rgba(255, 165, 0, 0.2),
+            rgba(255, 255, 0, 0.2),
+            rgba(0, 128, 0, 0.2),
+            rgba(0, 0, 255, 0.2),
+            rgba(75, 0, 130, 0.2),
+            rgba(238, 130, 238, 0.2));
+    animation: rgb-slide 5s linear infinite;
+    opacity: 0.5;
+}
+
+@keyframes rgb-slide {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+.ai-assistant-header h3 {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.ai-assistant-header h3 i {
+    font-size: 1.4rem;
+}
+
+.ai-assistant-controls {
+    display: flex;
+    gap: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+.ai-assistant-controls button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.ai-assistant-controls button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.ai-assistant-messages {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+}
+
+.ai-assistant-input {
+    display: flex;
+    padding: 1rem;
+    border-top: 1px solid #eee;
+    background-color: white;
+}
+
+.ai-assistant-input input {
+    flex: 1;
+    padding: 1rem 1.2rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 30px;
+    outline: none;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    box-shadow: var(--shadow-sm);
+}
+
+.ai-assistant-input input:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+}
+
+.ai-assistant-input button {
+    background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin-left: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-assistant-input button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            rgba(255, 0, 0, 0.3),
+            rgba(255, 165, 0, 0.3),
+            rgba(255, 255, 0, 0.3),
+            rgba(0, 128, 0, 0.3),
+            rgba(0, 0, 255, 0.3),
+            rgba(75, 0, 130, 0.3),
+            rgba(238, 130, 238, 0.3));
+    background-size: 200% 200%;
+    animation: rgb-slide 2s linear infinite;
+    opacity: 0.5;
+}
+
+.ai-assistant-input button i {
+    font-size: 1.2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.ai-assistant-input button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .legal-hero .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .legal-hero-content {
+        max-width: 100%;
+    }
+
+    .judiciary-emblem {
+        max-width: 100%;
+    }
+
+    .legal-step {
+        flex-direction: column;
+    }
+
+    .step-number {
+        margin-right: 0;
+        margin-bottom: 1.5rem;
+    }
+
+    .legal-step:not(:last-child)::after {
+        left: 30px;
+        top: 60px;
+        height: calc(100% - 60px);
+    }
+}
+
+@media (max-width: 768px) {
+    .legal-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .tabs-header {
+        flex-direction: column;
+    }
+
+    .tab-btn {
+        padding: 1rem;
+    }
+
+    .tabs-content {
+        padding: 2rem 1.5rem;
+    }
+
+    .resources-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-assistant-window {
+        width: 320px;
+        height: 450px;
+    }
+}
+
+@media (max-width: 480px) {
+    .scales-container {
+        width: 250px;
+        height: 250px;
+    }
+
+    .scales {
+        width: 150px;
+        height: 150px;
+    }
+
+    .rgb-glow {
+        width: 250px;
+        height: 250px;
+    }
+
+    .ai-assistant-window {
+        width: 300px;
+        right: -15px;
+    }
+
+    .ai-assistant-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

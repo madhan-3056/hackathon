@@ -1,4 +1,4 @@
-// El ClassicoAI - Frontend JavaScript
+// Virtual Lawyer - Frontend JavaScript
 
 document.addEventListener('DOMContentLoaded', function () {
     // Chatbot functionality
@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const userInput = document.getElementById('userInput');
     const sendMessage = document.getElementById('sendMessage');
     const chatMessages = document.getElementById('chatMessages');
+
+    // Testimonials slider
+    const testimonials = document.querySelectorAll('.testimonial');
+    let currentTestimonial = 0;
 
     // WebSocket connection
     let socket = null;
@@ -27,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             socket = new WebSocket(wsUrl);
 
-            socket.onopen = function() {
+            socket.onopen = function () {
                 console.log('WebSocket connection established');
                 isConnected = true;
 
@@ -37,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             };
 
-            socket.onmessage = function(event) {
+            socket.onmessage = function (event) {
                 try {
                     const data = JSON.parse(event.data);
                     console.log('WebSocket message received:', data);
@@ -53,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             break;
 
                         case 'explanation':
-                            addMessage(`Term: ${data.term}\n\nExplanation: ${data.explanation}`, 'bot-message');
+                            addBotMessage(`<strong>${data.term}</strong>: ${data.explanation}`);
                             break;
 
                         case 'message_received':
@@ -61,12 +65,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             break;
 
                         case 'ai_response':
-                            addMessage(data.message.content, 'bot-message');
+                            addBotMessage(data.message.content);
                             break;
 
                         case 'error':
                             console.error('WebSocket error message:', data.message);
-                            addMessage(`Sorry, I encountered an error: ${data.message}`, 'bot-message error');
+                            addBotMessage(`Sorry, I encountered an error: ${data.message}`);
                             break;
 
                         default:
@@ -77,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             };
 
-            socket.onclose = function() {
+            socket.onclose = function () {
                 console.log('WebSocket connection closed');
                 isConnected = false;
 
@@ -85,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 setTimeout(initWebSocket, 3000);
             };
 
-            socket.onerror = function(error) {
+            socket.onerror = function (error) {
                 console.error('WebSocket error:', error);
                 isConnected = false;
             };
@@ -111,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Simple JWT parsing to get user ID (in a real app, use proper JWT library)
             const base64Url = token.split('.')[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
             }).join(''));
 
@@ -126,22 +130,34 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize WebSocket
     initWebSocket();
 
-    // Toggle chatbot window
-    chatbotIcon.addEventListener('click', function () {
-        chatbotWindow.classList.add('active');
-        chatbotIcon.style.display = 'none';
-    });
+    // Toggle chatbot window with animation - only if not using as a link
+    if (!chatbotIcon.hasAttribute('href')) {
+        chatbotIcon.addEventListener('click', function (e) {
+            e.preventDefault();
+            chatbotWindow.classList.add('active');
+            chatbotIcon.style.display = 'none';
+
+            // Focus on input field
+            setTimeout(() => {
+                userInput.focus();
+            }, 400);
+        });
+    }
 
     // Minimize chatbot
     minimizeChat.addEventListener('click', function () {
         chatbotWindow.classList.remove('active');
-        chatbotIcon.style.display = 'flex';
+        setTimeout(() => {
+            chatbotIcon.style.display = 'flex';
+        }, 300);
     });
 
     // Close chatbot
     closeChat.addEventListener('click', function () {
         chatbotWindow.classList.remove('active');
-        chatbotIcon.style.display = 'flex';
+        setTimeout(() => {
+            chatbotIcon.style.display = 'flex';
+        }, 300);
     });
 
     // Send message
@@ -150,18 +166,21 @@ document.addEventListener('DOMContentLoaded', function () {
         if (message === '') return;
 
         // Add user message to chat
-        addMessage(message, 'user-message');
+        addUserMessage(message);
 
         // Clear input
         userInput.value = '';
+
+        // Show typing indicator
+        showTypingIndicator();
 
         // Check if WebSocket is connected
         if (isConnected && socket) {
             // Determine if this might be a legal term explanation request
             const isLegalTermRequest = message.toLowerCase().includes('what is') ||
-                                      message.toLowerCase().includes('explain') ||
-                                      message.toLowerCase().includes('define') ||
-                                      message.toLowerCase().includes('meaning of');
+                message.toLowerCase().includes('explain') ||
+                message.toLowerCase().includes('define') ||
+                message.toLowerCase().includes('meaning of');
 
             if (isLegalTermRequest) {
                 // Extract the term to explain
@@ -192,28 +211,102 @@ document.addEventListener('DOMContentLoaded', function () {
             // Simulate bot response after a short delay
             setTimeout(function () {
                 const botResponses = [
-                    "I'm analyzing your legal question. Could you provide more details?",
-                    "Based on my analysis, this appears to be a contract issue. Would you like me to explain the legal implications?",
-                    "I've found relevant legal precedents that might help with your situation. Would you like me to elaborate?",
-                    "This is a common legal concern for small businesses. Here's what you should know...",
-                    "I recommend reviewing the specific terms in your agreement. Would you like guidance on how to interpret them?"
+                    "I'm analyzing your legal question. Could you provide more details about your business situation?",
+                    "Based on my analysis, this appears to be a contract issue common for small businesses. Would you like me to explain the legal implications?",
+                    "I've found relevant legal precedents that might help with your situation. For startups like yours, it's important to consider...",
+                    "This is a common legal concern for small businesses. Here's what you should know about protecting your interests...",
+                    "I recommend reviewing the specific terms in your agreement. As a small business owner, you should pay special attention to liability clauses."
                 ];
 
                 // Select a random response for demo purposes
                 const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
-                addMessage(randomResponse, 'bot-message');
-            }, 1000);
+
+                // Remove typing indicator and add bot message
+                removeTypingIndicator();
+                addBotMessage(randomResponse);
+            }, 1500);
         }
     }
 
-    // Add message to chat
-    function addMessage(text, className) {
+    // Add user message to chat
+    function addUserMessage(text) {
         const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', className);
-        messageDiv.textContent = text;
+        messageDiv.classList.add('message', 'user-message');
+
+        const messageContent = document.createElement('div');
+        messageContent.classList.add('message-content');
+        messageContent.textContent = text;
+
+        messageDiv.appendChild(messageContent);
         chatMessages.appendChild(messageDiv);
 
         // Scroll to the bottom of the chat
+        scrollToBottom();
+    }
+
+    // Add bot message to chat
+    function addBotMessage(text) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', 'bot-message');
+
+        const botAvatar = document.createElement('div');
+        botAvatar.classList.add('bot-avatar');
+
+        const avatarIcon = document.createElement('i');
+        avatarIcon.classList.add('fas', 'fa-balance-scale');
+        botAvatar.appendChild(avatarIcon);
+
+        const messageContent = document.createElement('div');
+        messageContent.classList.add('message-content');
+        messageContent.innerHTML = text; // Using innerHTML to support HTML in messages
+
+        messageDiv.appendChild(botAvatar);
+        messageDiv.appendChild(messageContent);
+        chatMessages.appendChild(messageDiv);
+
+        // Scroll to the bottom of the chat
+        scrollToBottom();
+    }
+
+    // Show typing indicator
+    function showTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.classList.add('message', 'bot-message', 'typing-indicator-container');
+        typingDiv.id = 'typingIndicator';
+
+        const botAvatar = document.createElement('div');
+        botAvatar.classList.add('bot-avatar');
+
+        const avatarIcon = document.createElement('i');
+        avatarIcon.classList.add('fas', 'fa-balance-scale');
+        botAvatar.appendChild(avatarIcon);
+
+        const typingIndicator = document.createElement('div');
+        typingIndicator.classList.add('message-content', 'typing-indicator');
+
+        for (let i = 0; i < 3; i++) {
+            const dot = document.createElement('span');
+            typingIndicator.appendChild(dot);
+        }
+
+        typingDiv.appendChild(botAvatar);
+        typingDiv.appendChild(typingIndicator);
+        chatMessages.appendChild(typingDiv);
+
+        // Scroll to the bottom of the chat
+        scrollToBottom();
+    }
+
+    // Remove typing indicator
+    function removeTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    }
+
+    // Scroll to bottom of chat
+    function scrollToBottom() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
@@ -236,14 +329,131 @@ document.addEventListener('DOMContentLoaded', function () {
         chatbotWindow.classList.add('active');
         chatbotIcon.style.display = 'none';
 
-        // Add welcome message
-        setTimeout(function () {
-            addMessage("Welcome to El ClassicoAI! How can I assist with your legal needs today?", 'bot-message');
-        }, 500);
+        // Add welcome message if it's the first time opening
+        if (chatMessages.children.length <= 1) {
+            setTimeout(function () {
+                addBotMessage("Hello! I'm your Virtual Lawyer Assistant. How can I help your small business or startup today?");
+            }, 500);
+        }
+
+        // Focus on input field
+        setTimeout(() => {
+            userInput.focus();
+        }, 600);
     }
 
     // Add event listeners to buttons
-    if (tryFreeBtn) tryFreeBtn.addEventListener('click', openChatbot);
-    if (tryFreeBtn2) tryFreeBtn2.addEventListener('click', openChatbot);
-    if (startTrialBtn) startTrialBtn.addEventListener('click', openChatbot);
+    if (tryFreeBtn) tryFreeBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        openChatbot();
+    });
+
+    if (tryFreeBtn2) tryFreeBtn2.addEventListener('click', function (e) {
+        e.preventDefault();
+        openChatbot();
+    });
+
+    if (startTrialBtn) startTrialBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        openChatbot();
+    });
+
+    // Testimonials slider functionality
+    function showTestimonial(index) {
+        testimonials.forEach((testimonial, i) => {
+            if (i === index) {
+                testimonial.style.opacity = '1';
+                testimonial.style.transform = 'translateX(0)';
+            } else {
+                testimonial.style.opacity = '0';
+                testimonial.style.transform = 'translateX(50px)';
+            }
+        });
+    }
+
+    // Initialize testimonials if they exist
+    if (testimonials.length > 0) {
+        // Set initial state
+        testimonials.forEach((testimonial, i) => {
+            if (i !== 0) {
+                testimonial.style.opacity = '0';
+                testimonial.style.position = 'absolute';
+                testimonial.style.top = '0';
+            }
+        });
+
+        // Auto-rotate testimonials
+        setInterval(() => {
+            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+            showTestimonial(currentTestimonial);
+        }, 5000);
+    }
+
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Add animation to service cards on scroll
+    const serviceCards = document.querySelectorAll('.service-card');
+
+    function checkScroll() {
+        serviceCards.forEach(card => {
+            const cardTop = card.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+
+            if (cardTop < windowHeight * 0.8) {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }
+        });
+    }
+
+    // Initialize service cards if they exist
+    if (serviceCards.length > 0) {
+        // Set initial state
+        serviceCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+
+        // Check on scroll
+        window.addEventListener('scroll', checkScroll);
+
+        // Check on initial load
+        checkScroll();
+    }
+
+    // Add typing animation to the hero title
+    const heroTitle = document.querySelector('.hero h1');
+    if (heroTitle) {
+        const text = heroTitle.innerHTML;
+        heroTitle.innerHTML = '';
+
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                heroTitle.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+
+        // Start typing animation after a short delay
+        setTimeout(typeWriter, 500);
+    }
 });
