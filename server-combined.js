@@ -5,6 +5,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import http from 'http';
+import fs from 'fs';
 import connectDB from './config/db.js';
 import errorHandler from './middlewares/errorHandler.js';
 
@@ -74,12 +75,41 @@ try {
 // Check if frontend/build directory exists
 const frontendBuildPath = path.resolve(__dirname, 'frontend', 'build');
 
-app.use(express.static(frontendBuildPath));
+// Check if the build directory exists
+if (fs.existsSync(frontendBuildPath)) {
+  console.log(`Serving static files from: ${frontendBuildPath}`);
+  app.use(express.static(frontendBuildPath));
 
-// Serve index.html for any route not handled by the API
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(frontendBuildPath, 'index.html'));
-});
+  // Special handling for HTML files
+  app.get('/App.html', (req, res) => {
+    res.sendFile(path.resolve(frontendBuildPath, 'App.html'));
+  });
+
+  app.get('/legal-actions.html', (req, res) => {
+    res.sendFile(path.resolve(frontendBuildPath, 'legal-actions.html'));
+  });
+
+  // Serve index.html for any route not handled by the API
+  app.get('*', (req, res) => {
+    // Check if index.html exists
+    const indexPath = path.resolve(frontendBuildPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else if (fs.existsSync(path.resolve(frontendBuildPath, 'App.html'))) {
+      // Fallback to App.html if index.html doesn't exist
+      res.sendFile(path.resolve(frontendBuildPath, 'App.html'));
+    } else {
+      res.status(404).send('Application files not found');
+    }
+  });
+} else {
+  console.warn(`Warning: Frontend build directory not found at ${frontendBuildPath}`);
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.status(404).send('Frontend build not available');
+    }
+  });
+}
 
 // Error handler middleware
 app.use(errorHandler);

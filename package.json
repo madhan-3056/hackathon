@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server-combined.js",
     "dev": "nodemon server-combined.js",
-    "build": "node build-deploy.js",
+    "build": "node build-simple.js || node build-deploy.js",
+    "check-build": "node check-build.js",
     "backend": "node index.js",
     "frontend": "cd frontend && npm start",
     "dev:both": "concurrently \"npm run backend\" \"npm run frontend\"",
@@ -36,7 +37,8 @@
     "build:deploy": "node build-for-deployment.js",
     "connect:deploy": "bash connect-and-deploy.sh",
     "prebuild": "npm run check-deps",
-    "deploy:simple": "node deploy-simple.js"
+    "deploy:simple": "node deploy-simple.js",
+    "build:simple": "cd frontend && node copy-html-files.js && cd .. && node check-build.js"
   },
   "keywords": [
     "legal",

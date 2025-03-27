@@ -62,12 +62,69 @@ const buildAndDeploy = async () => {
         // 4. Build frontend
         console.log('Building frontend...');
         try {
+            // First try the standard build
             await execCommand('npm run build', frontendPath);
         } catch (error) {
             console.error('Frontend build failed:', error);
             console.log('Attempting to fix frontend build issues...');
+
+            // Install or reinstall react-scripts
             await execCommand('npm install react-scripts --save', frontendPath);
-            await execCommand('npm run build', frontendPath);
+
+            // Try the build again
+            try {
+                await execCommand('npm run build', frontendPath);
+            } catch (secondError) {
+                console.error('Frontend build failed again:', secondError);
+
+                // Try the fallback build script
+                console.log('Trying fallback build method...');
+                try {
+                    await execCommand('npm run build:fallback', frontendPath);
+                } catch (fallbackError) {
+                    console.error('Fallback build failed:', fallbackError);
+
+                    // Manual fallback as last resort
+                    console.log('Creating minimal build directory manually...');
+                    ensureDirectoryExists(path.join(frontendPath, 'build'));
+
+                    // Copy HTML, CSS, and JS files directly
+                    const filesToCopy = [
+                        { src: 'App.html', dest: 'build/App.html' },
+                        { src: 'App.css', dest: 'build/App.css' },
+                        { src: 'App.js', dest: 'build/App.js' },
+                        { src: 'legal-actions.html', dest: 'build/legal-actions.html' },
+                        { src: 'legal-actions.css', dest: 'build/legal-actions.css' },
+                        { src: 'legal-actions.js', dest: 'build/legal-actions.js' }
+                    ];
+
+                    for (const file of filesToCopy) {
+                        if (fs.existsSync(path.join(frontendPath, file.src))) {
+                            fs.copyFileSync(
+                                path.join(frontendPath, file.src),
+                                path.join(frontendPath, file.dest)
+                            );
+                            console.log(`Copied ${file.src} to ${file.dest}`);
+                        } else {
+                            console.warn(`Warning: ${file.src} not found`);
+                        }
+                    }
+
+                    // Create a simple index.html that redirects to App.html
+                    const indexHtml = `<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="refresh" content="0;url=App.html">
+    <title>Virtual Lawyer</title>
+</head>
+<body>
+    Redirecting to <a href="App.html">App.html</a>...
+</body>
+</html>`;
+                    fs.writeFileSync(path.join(frontendPath, 'build', 'index.html'), indexHtml);
+                    console.log('Created fallback index.html');
+                }
+            }
         }
 
         // 5. Create frontend/build directory in backend if it doesn't exist
