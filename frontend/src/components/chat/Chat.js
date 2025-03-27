@@ -26,15 +26,10 @@ const Chat = () => {
     // Fetch AI configuration
     const fetchAiConfig = async () => {
         try {
-            const response = await fetch('/api/v1/ai/config', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            const data = await response.json();
-            if (data.success) {
-                setAiConfig(data.data);
-                console.log('AI config loaded:', data.data);
+            const response = await aiService.getConfig();
+            if (response.success) {
+                setAiConfig(response.data);
+                console.log('AI config loaded:', response.data);
             }
         } catch (error) {
             console.error('Error fetching AI config:', error);
@@ -92,7 +87,7 @@ const Chat = () => {
                 if (termMatch && termMatch[1]) {
                     const term = termMatch[1].trim();
 
-                    // Send message to chat service
+                    // First, add the user message to chat history
                     const chatResponse = await chatService.sendMessage(input, 'explain_term');
 
                     if (chatResponse.success) {
@@ -103,14 +98,61 @@ const Chat = () => {
                             )
                         );
 
-                        // Add AI response if available
-                        if (chatResponse.data.aiResponse) {
+                        // Get the term explanation from AI service
+                        const termResponse = await aiService.explainTerm(term);
+
+                        if (termResponse.success) {
+                            // Create AI response message
+                            const aiResponseMessage = {
+                                id: 'ai_' + Date.now(),
+                                content: termResponse.data.explanation,
+                                sender: 'ai',
+                                timestamp: new Date().toISOString()
+                            };
+
+                            // Add AI response
+                            setMessages(prevMessages => [...prevMessages, aiResponseMessage]);
+                        } else if (chatResponse.data.aiResponse) {
+                            // Fallback to chat service response if AI service fails
                             setMessages(prevMessages => [...prevMessages, chatResponse.data.aiResponse]);
                         }
                     }
                 }
+            } else if (aiConfig.available) {
+                // This is a general legal question for small business/startup
+
+                // First, add the user message to chat history
+                const chatResponse = await chatService.sendMessage(input, 'general');
+
+                if (chatResponse.success) {
+                    // Replace the temporary message with the actual one from server
+                    setMessages(prevMessages =>
+                        prevMessages.map(msg =>
+                            msg.id === userMessage.id ? chatResponse.data.message : msg
+                        )
+                    );
+
+                    // Get the answer from AI service
+                    const questionResponse = await aiService.answerQuestion(input);
+
+                    if (questionResponse.success) {
+                        // Create AI response message
+                        const aiResponseMessage = {
+                            id: 'ai_' + Date.now(),
+                            content: questionResponse.data.answer,
+                            sender: 'ai',
+                            timestamp: new Date().toISOString()
+                        };
+
+                        // Add AI response
+                        setMessages(prevMessages => [...prevMessages, aiResponseMessage]);
+                    } else if (chatResponse.data.aiResponse) {
+                        // Fallback to chat service response if AI service fails
+                        setMessages(prevMessages => [...prevMessages, chatResponse.data.aiResponse]);
+                    }
+                }
             } else {
-                // Send as regular chat message
+                // AI is not available, use regular chat service
                 const response = await chatService.sendMessage(input, 'general');
 
                 if (response.success) {

@@ -80,6 +80,28 @@ export const aiService = {
             console.error('Error analyzing document:', error);
             throw error;
         }
+    },
+
+    // Answer a legal question
+    answerQuestion: async (question) => {
+        try {
+            const response = await api.post('/ai/question', { question });
+            return response.data;
+        } catch (error) {
+            console.error('Error answering question:', error);
+            throw error;
+        }
+    },
+
+    // Get AI configuration
+    getConfig: async () => {
+        try {
+            const response = await api.get('/ai/config');
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching AI config:', error);
+            throw error;
+        }
     }
 };
 

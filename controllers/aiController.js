@@ -1,4 +1,4 @@
-import { analyzeDocument, explainLegalTerm } from '../services/aiService.js';
+import { analyzeDocument, explainLegalTerm, answerLegalQuestion } from '../services/aiService.js';
 import ErrorResponse from '../utils/errorResponse.js';
 
 // Explain a legal term
@@ -44,6 +44,29 @@ export const analyze = async (req, res, next) => {
     }
 };
 
+// Answer a legal question
+export const answerQuestion = async (req, res, next) => {
+    try {
+        const { question } = req.body;
+
+        if (!question) {
+            return next(new ErrorResponse('Please provide a question to answer', 400));
+        }
+
+        const answer = await answerLegalQuestion(question);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                question,
+                answer
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // Get AI configuration
 export const getConfig = async (req, res, next) => {
     try {
@@ -52,7 +75,13 @@ export const getConfig = async (req, res, next) => {
             success: true,
             data: {
                 available: process.env.CLAUDE_API_KEY ? true : false,
-                model: 'claude-3-haiku-20240307'
+                model: 'claude-3-haiku-20240307',
+                capabilities: [
+                    'Legal term explanations',
+                    'Document analysis',
+                    'Small business legal questions',
+                    'Startup compliance guidance'
+                ]
             }
         });
     } catch (error) {
@@ -64,5 +93,6 @@ export const getConfig = async (req, res, next) => {
 export default {
     explainTerm,
     analyze,
+    answerQuestion,
     getConfig
 };
