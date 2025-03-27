@@ -9,7 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const documentRoutes = require('./routes/documentRoutes.cjs');
 const complianceRoutes = require('./routes/complianceRoutes');
 const chatRoutes = require('./routes/chatRoutes');
-const aiRoutes = require('./routes/aiRoutes');
+const aiRoutes = require('./routes/aiRoutes.cjs');
 
 // Connect to database
 connectDB();

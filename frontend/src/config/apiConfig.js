@@ -9,22 +9,7 @@ const apiConfig = {
     },
 
     // Timeout in milliseconds
-    timeout: 30000,
-
-    // Claude API configuration
-    claude: {
-        // The frontend will use this endpoint to communicate with Claude via the backend
-        endpoint: '/ai/chat',
-
-        // Default model to use
-        model: 'claude-3-haiku-20240307',
-
-        // Default parameters
-        defaultParams: {
-            temperature: 0.3,
-            max_tokens: 1000
-        }
-    }
+    timeout: 30000
 };
 
 export default apiConfig;

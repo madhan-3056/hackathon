@@ -235,10 +235,23 @@ The application can be deployed using several methods:
    deploy-live.bat      # Live server deployment
    ```
 
+6. Simple deployment (recommended for most users):
+   ```bash
+   # For Unix/Linux/Mac
+   chmod +x deploy-simple.sh
+   ./deploy-simple.sh
+
+   # For Windows
+   deploy-simple.bat
+
+   # Or using npm
+   npm run deploy:simple
+   ```
+
 ### Manual Deployment
 
 1. Set the environment variables for production
-2. Build the application: `node build-deploy.js`
+2. Build the application: `node build-deploy.js` or `npm run deploy:simple`
 3. Start the server: `node server-combined.js`
 
 For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)

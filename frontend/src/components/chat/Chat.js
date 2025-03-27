@@ -98,23 +98,31 @@ const Chat = () => {
                             )
                         );
 
-                        // Get the term explanation from AI service
-                        const termResponse = await aiService.explainTerm(term);
+                        try {
+                            // Get the term explanation from AI service
+                            const termResponse = await aiService.explainTerm(term);
 
-                        if (termResponse.success) {
-                            // Create AI response message
-                            const aiResponseMessage = {
-                                id: 'ai_' + Date.now(),
-                                content: termResponse.data.explanation,
-                                sender: 'ai',
-                                timestamp: new Date().toISOString()
-                            };
+                            if (termResponse && termResponse.success) {
+                                // Create AI response message
+                                const aiResponseMessage = {
+                                    id: 'ai_' + Date.now(),
+                                    content: termResponse.data.explanation,
+                                    sender: 'ai',
+                                    timestamp: new Date().toISOString()
+                                };
 
-                            // Add AI response
-                            setMessages(prevMessages => [...prevMessages, aiResponseMessage]);
-                        } else if (chatResponse.data.aiResponse) {
+                                // Add AI response
+                                setMessages(prevMessages => [...prevMessages, aiResponseMessage]);
+                            } else if (chatResponse.data.aiResponse) {
+                                // Fallback to chat service response if AI service fails
+                                setMessages(prevMessages => [...prevMessages, chatResponse.data.aiResponse]);
+                            }
+                        } catch (error) {
+                            console.error('Error getting term explanation:', error);
                             // Fallback to chat service response if AI service fails
-                            setMessages(prevMessages => [...prevMessages, chatResponse.data.aiResponse]);
+                            if (chatResponse.data.aiResponse) {
+                                setMessages(prevMessages => [...prevMessages, chatResponse.data.aiResponse]);
+                            }
                         }
                     }
                 }
@@ -132,23 +140,31 @@ const Chat = () => {
                         )
                     );
 
-                    // Get the answer from AI service
-                    const questionResponse = await aiService.answerQuestion(input);
+                    try {
+                        // Get the answer from AI service
+                        const questionResponse = await aiService.answerQuestion(input);
 
-                    if (questionResponse.success) {
-                        // Create AI response message
-                        const aiResponseMessage = {
-                            id: 'ai_' + Date.now(),
-                            content: questionResponse.data.answer,
-                            sender: 'ai',
-                            timestamp: new Date().toISOString()
-                        };
+                        if (questionResponse && questionResponse.success) {
+                            // Create AI response message
+                            const aiResponseMessage = {
+                                id: 'ai_' + Date.now(),
+                                content: questionResponse.data.answer,
+                                sender: 'ai',
+                                timestamp: new Date().toISOString()
+                            };
 
-                        // Add AI response
-                        setMessages(prevMessages => [...prevMessages, aiResponseMessage]);
-                    } else if (chatResponse.data.aiResponse) {
+                            // Add AI response
+                            setMessages(prevMessages => [...prevMessages, aiResponseMessage]);
+                        } else if (chatResponse.data.aiResponse) {
+                            // Fallback to chat service response if AI service fails
+                            setMessages(prevMessages => [...prevMessages, chatResponse.data.aiResponse]);
+                        }
+                    } catch (error) {
+                        console.error('Error getting question answer:', error);
                         // Fallback to chat service response if AI service fails
-                        setMessages(prevMessages => [...prevMessages, chatResponse.data.aiResponse]);
+                        if (chatResponse.data.aiResponse) {
+                            setMessages(prevMessages => [...prevMessages, chatResponse.data.aiResponse]);
+                        }
                     }
                 }
             } else {

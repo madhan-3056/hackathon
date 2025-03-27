@@ -14,6 +14,7 @@
     "test:app": "node test-app.js",
     "test:env": "node test-env.js",
     "test:claude": "node test-claude.js",
+    "test:claude:simple": "node test-claude-simple.cjs",
     "test:connection": "node test-connection.js",
     "check-deps": "node check-dependencies.js",
     "prestart": "node check-dependencies.js",
@@ -33,7 +34,9 @@
     "install:all": "npm install && cd frontend && npm install && cd ..",
     "build:frontend": "cd frontend && npm run build",
     "build:deploy": "node build-for-deployment.js",
-    "connect:deploy": "bash connect-and-deploy.sh"
+    "connect:deploy": "bash connect-and-deploy.sh",
+    "prebuild": "npm run check-deps",
+    "deploy:simple": "node deploy-simple.js"
   },
   "keywords": [
     "legal",

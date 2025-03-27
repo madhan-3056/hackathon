@@ -61,7 +61,14 @@ const buildAndDeploy = async () => {
 
         // 4. Build frontend
         console.log('Building frontend...');
-        await execCommand('npm run build', frontendPath);
+        try {
+            await execCommand('npm run build', frontendPath);
+        } catch (error) {
+            console.error('Frontend build failed:', error);
+            console.log('Attempting to fix frontend build issues...');
+            await execCommand('npm install react-scripts --save', frontendPath);
+            await execCommand('npm run build', frontendPath);
+        }
 
         // 5. Create frontend/build directory in backend if it doesn't exist
         ensureDirectoryExists(path.join(backendPath, 'frontend'));
