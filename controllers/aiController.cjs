@@ -88,3 +88,11 @@ exports.getConfig = async (req, res, next) => {
         next(error);
     }
 };
+
+// Export all functions as a module
+module.exports = {
+    explainTerm: exports.explainTerm,
+    analyze: exports.analyze,
+    answerQuestion: exports.answerQuestion,
+    getConfig: exports.getConfig
+};

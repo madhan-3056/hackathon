@@ -1,6 +1,7 @@
 const express = require('express');
 const { protect } = require('../middlewares/auth');
-const { explainTerm, analyze, answerQuestion, getConfig } = require('../controllers/aiController.cjs');
+const aiController = require('../controllers/aiController.cjs');
+const { explainTerm, analyze, answerQuestion, getConfig } = aiController;
 
 const router = express.Router();
 

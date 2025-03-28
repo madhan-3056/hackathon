@@ -8,8 +8,8 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const documentRoutes = require('./routes/documentRoutes.cjs');
 const complianceRoutes = require('./routes/complianceRoutes');
-const chatRoutes = require('./routes/chatRoutes');
-const aiRoutes = require('./routes/aiRoutes.cjs');
+const chatRoutes = require('./routes/chatRoutes.cjs');
+const aiRoutes = require('./routes/aiRoutes');
 
 // Connect to database
 connectDB();

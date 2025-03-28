@@ -1,13 +1,11 @@
-import aiService from '../services/aiService.js';
-import ErrorResponse from '../utils/errorResponse.js';
-
-const { explainLegalTerm, answerLegalQuestion } = aiService;
+const aiService = require('../services/aiService.cjs');
+const ErrorResponse = require('../utils/errorResponse');
 
 // Store messages in memory (in a real app, this would be in a database)
 const messages = [];
 
 // Send a message
-export const sendMessage = async (req, res, next) => {
+exports.sendMessage = async (req, res, next) => {
     try {
         const { content, type } = req.body;
         const userId = req.user.id;
@@ -32,7 +30,7 @@ export const sendMessage = async (req, res, next) => {
         let aiResponse = null;
         if (type === 'explain_term') {
             try {
-                const explanation = await explainLegalTerm(content);
+                const explanation = await aiService.explainLegalTerm(content);
 
                 // Create AI response message
                 aiResponse = {
@@ -52,7 +50,7 @@ export const sendMessage = async (req, res, next) => {
         } else if (type === 'chat_message') {
             try {
                 // For regular chat messages, use the general question answering
-                const answer = await answerLegalQuestion(content);
+                const answer = await aiService.answerLegalQuestion(content);
 
                 // Create AI response message
                 aiResponse = {
@@ -85,7 +83,7 @@ export const sendMessage = async (req, res, next) => {
 };
 
 // Get messages for a user
-export const getMessages = async (req, res, next) => {
+exports.getMessages = async (req, res, next) => {
     try {
         const userId = req.user.id;
 
@@ -103,7 +101,7 @@ export const getMessages = async (req, res, next) => {
 };
 
 // Clear chat history for a user
-export const clearChat = async (req, res, next) => {
+exports.clearChat = async (req, res, next) => {
     try {
         const userId = req.user.id;
 
@@ -125,9 +123,9 @@ export const clearChat = async (req, res, next) => {
     }
 };
 
-// Default export for compatibility
-export default {
-    sendMessage,
-    getMessages,
-    clearChat
+// Export all functions as a module
+module.exports = {
+    sendMessage: exports.sendMessage,
+    getMessages: exports.getMessages,
+    clearChat: exports.clearChat
 };

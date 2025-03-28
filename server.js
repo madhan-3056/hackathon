@@ -1,11 +1,11 @@
 const app = require('./app.cjs');
 const http = require('http');
-const { setupWebSocket } = require('./services/chatService');
+const chatService = require('./services/chatService.cjs');
 
 const server = http.createServer(app);
 
 // Setup WebSocket for real-time chat
-setupWebSocket(server);
+chatService.setupWebSocket(server);
 
 const PORT = process.env.PORT || 5001;
 
